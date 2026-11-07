@@ -17,6 +17,7 @@ import {
   Info
 } from 'lucide-react';
 import { Teacher, School, ClassRoom, Student, DailyAttendance } from '../types';
+import { PWAInstallButton } from './PWAInstallButton';
 
 interface SettingsViewProps {
   teacher: Partial<Teacher>;
@@ -93,13 +94,16 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       )}
 
       {/* Header Banner */}
-      <div className="bg-[#151326] border border-purple-900/40 rounded-2xl p-4 shadow-lg">
-        <div className="flex items-center gap-2 text-xs font-bold text-purple-400 uppercase tracking-wider mb-1">
-          <SettingsIcon className="w-4 h-4" />
-          APP ADMINISTRATION
+      <div className="bg-[#151326] border border-purple-900/40 rounded-2xl p-4 shadow-lg flex items-center justify-between">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-bold text-purple-400 uppercase tracking-wider mb-1">
+            <SettingsIcon className="w-4 h-4" />
+            APP ADMINISTRATION
+          </div>
+          <h2 className="text-xl font-black text-white">SETTINGS & DATA MANAGEMENT</h2>
+          <p className="text-xs text-gray-400">Manage Google Account Cloud synchronization, local offline database backups, and storage.</p>
         </div>
-        <h2 className="text-xl font-black text-white">SETTINGS & DATA MANAGEMENT</h2>
-        <p className="text-xs text-gray-400">Manage Google Account Cloud synchronization, local offline database backups, and storage.</p>
+        <PWAInstallButton />
       </div>
 
       {/* MULTI-DEVICE INSTANT CLOUD SYNTHESIS */}
