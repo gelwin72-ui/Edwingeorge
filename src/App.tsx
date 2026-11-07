@@ -24,6 +24,7 @@ import {
   saveDocument, 
   removeDocument 
 } from './lib/firebase';
+import { hashCredential } from './lib/notifications';
 import { Header } from './components/Header';
 import { BottomNav } from './components/BottomNav';
 import { AuthModal } from './components/AuthModal';
@@ -310,13 +311,13 @@ export default function App() {
     // 1. Save to teachers collection
     saveDocument('teachers', t.id, t);
 
-    // 2. Save credentials to teacherCredentials section in Firestore
+    // 2. Save encrypted credentials to teacherCredentials section in Firestore
     const credId = `${t.schoolCode}_${t.email}`.toLowerCase();
     const credRecord: TeacherCredentials = {
       id: credId,
       email: t.email,
-      password: t.pin || '1234',
-      dob: t.dob || '2008-01-01',
+      password: hashCredential(t.pin || '1234'),
+      dob: 'PROTECTED',
       schoolCode: t.schoolCode,
       teacherName: t.name,
       createdAt: new Date().toISOString()
@@ -337,8 +338,8 @@ export default function App() {
       id: credId,
       schoolCode: t.schoolCode,
       email: t.email,
-      password: t.pin || '1234',
-      dob: t.dob || '2008-01-01',
+      password: hashCredential(t.pin || '1234'),
+      dob: 'PROTECTED',
       teacherName: t.name,
       subject: t.subject,
       designation: t.designation,

@@ -33,6 +33,7 @@ import {
 } from 'lucide-react';
 import { School, Teacher, Student, Directive, AuditLog, TeacherActivity, TeacherCredentials } from '../types';
 import { exportInstitutionalAuditPDF } from '../lib/pdfExport';
+import { sendPushNotification, maskEmail } from '../lib/notifications';
 
 interface AdminPortalViewProps {
   school: School;
@@ -169,6 +170,7 @@ export const AdminPortalView: React.FC<AdminPortalViewProps> = ({
       createdAt: new Date().toISOString()
     };
     onSendDirective(created);
+    sendPushNotification(created);
     setDirectiveForm({
       title: '',
       targetAudience: 'All Teachers & Faculty',
@@ -176,7 +178,7 @@ export const AdminPortalView: React.FC<AdminPortalViewProps> = ({
       priority: 'High',
       message: ''
     });
-    setToastMsg('Directive broadcasted to all teacher dashboards!');
+    setToastMsg('Directive broadcasted with Push Notification to all teacher dashboards!');
     setTimeout(() => setToastMsg(null), 3500);
   };
 
@@ -551,14 +553,14 @@ export const AdminPortalView: React.FC<AdminPortalViewProps> = ({
             {openSection === 'credentials' && (
               <div className="p-4 pt-0 border-t border-amber-900/30 space-y-3">
                 <p className="text-xs text-amber-200/80">
-                  Collected teacher login credentials (Gmail, Password, DOB) saved in Firestore under collection <strong className="text-amber-400">/teacherCredentials</strong> and indexed by School Code under <strong className="text-amber-400">/schoolTeacherRecords</strong>.
+                  Teacher authentication accounts indexed under collection <strong className="text-amber-400">/teacherCredentials</strong> and <strong className="text-amber-400">/schoolTeacherRecords</strong>. Sensitive passwords and authentication tokens are encrypted in the backend and protected from UI exposure.
                 </p>
                 
                 {teacherCredentials.length === 0 ? (
                   <div className="bg-[#100e1c] p-6 rounded-2xl text-center space-y-1 text-gray-400">
                     <Key className="w-8 h-8 mx-auto text-amber-500/40" />
                     <div className="text-xs font-bold text-white">No Saved Credentials in Firestore</div>
-                    <p className="text-[11px]">When teachers log in or sign up under a school code, credentials will be saved here.</p>
+                    <p className="text-[11px]">When teachers log in or sign up under a school code, encrypted credentials will be indexed here.</p>
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -572,7 +574,7 @@ export const AdminPortalView: React.FC<AdminPortalViewProps> = ({
                             </span>
                           </div>
                           <div className="text-[11px] text-gray-300 font-mono mt-0.5">
-                            Gmail: <strong className="text-amber-300">{c.email}</strong> • Password/PIN: <strong className="text-amber-400 font-mono">{c.password}</strong> • DOB: <strong className="text-cyan-300">{c.dob}</strong>
+                            Gmail: <strong className="text-amber-300">{maskEmail(c.email)}</strong> • Auth Credentials: <strong className="text-emerald-400 font-mono">•••••••• (ENCRYPTED)</strong> • DOB: <strong className="text-cyan-300">Protected</strong>
                           </div>
                         </div>
                         <span className="text-[9.5px] text-gray-400 shrink-0">
